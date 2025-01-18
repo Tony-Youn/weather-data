@@ -6,8 +6,8 @@ import { DEFAULT_COORDINATES } from "../config/constants";
 export class WeatherController {
   private weatherService: WeatherService;
 
-  constructor(apiKey: string) {
-    this.weatherService = new WeatherService(apiKey);
+  constructor() {
+    this.weatherService = new WeatherService();
   }
 
   getCurrentWeather = async (
@@ -16,11 +16,20 @@ export class WeatherController {
     next: NextFunction
   ) => {
     try {
-      const { nx = DEFAULT_COORDINATES.nx, ny = DEFAULT_COORDINATES.ny } =
-        req.query;
+      const {
+        nx = DEFAULT_COORDINATES.nx,
+        ny = DEFAULT_COORDINATES.ny,
+        serviceKey,
+      } = req.query;
+
+      if (!serviceKey) {
+        return res.status(400).json({ error: "Service key is required" });
+      }
+
       const data = await this.weatherService.getCurrentWeather(
         String(nx),
-        String(ny)
+        String(ny),
+        String(serviceKey)
       );
       res.json(data);
     } catch (error) {
@@ -30,11 +39,20 @@ export class WeatherController {
 
   getForecast = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { nx = DEFAULT_COORDINATES.nx, ny = DEFAULT_COORDINATES.ny } =
-        req.query;
+      const {
+        nx = DEFAULT_COORDINATES.nx,
+        ny = DEFAULT_COORDINATES.ny,
+        serviceKey,
+      } = req.query;
+
+      if (!serviceKey) {
+        return res.status(400).json({ error: "Service key is required" });
+      }
+
       const data = await this.weatherService.getForecast(
         String(nx),
-        String(ny)
+        String(ny),
+        String(serviceKey)
       );
       res.json(data);
     } catch (error) {
@@ -48,11 +66,20 @@ export class WeatherController {
     next: NextFunction
   ) => {
     try {
-      const { nx = DEFAULT_COORDINATES.nx, ny = DEFAULT_COORDINATES.ny } =
-        req.query;
+      const {
+        nx = DEFAULT_COORDINATES.nx,
+        ny = DEFAULT_COORDINATES.ny,
+        serviceKey,
+      } = req.query;
+
+      if (!serviceKey) {
+        return res.status(400).json({ error: "Service key is required" });
+      }
+
       const data = await this.weatherService.getUltraForecast(
         String(nx),
-        String(ny)
+        String(ny),
+        String(serviceKey)
       );
       res.json(data);
     } catch (error) {
@@ -62,8 +89,16 @@ export class WeatherController {
 
   getVersion = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { ftype = "ODAM" } = req.query;
-      const data = await this.weatherService.getVersion(ftype as string);
+      const { ftype = "ODAM", serviceKey } = req.query;
+
+      if (!serviceKey) {
+        return res.status(400).json({ error: "Service key is required" });
+      }
+
+      const data = await this.weatherService.getVersion(
+        ftype as string,
+        String(serviceKey)
+      );
       res.json(data);
     } catch (error) {
       next(error);

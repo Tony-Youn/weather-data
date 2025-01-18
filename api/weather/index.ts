@@ -9,11 +9,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-if (!process.env.WEATHER_API_KEY) {
-  throw new Error("WEATHER_API_KEY environment variable is required");
-}
-
-app.use("/api/weather", createWeatherRouter(process.env.WEATHER_API_KEY));
+app.use("/api/weather", createWeatherRouter());
 app.use(errorHandler);
 
 app.listen(port, () => {
