@@ -1,4 +1,17 @@
 {
   "version": 2,
-  "rewrites": [{ "source": "/(.*)", "destination": "api/**/*.ts" }]
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "builds": [
+    {
+      "src": "api/**/*.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/weather/(.*)",
+      "dest": "/api/weather"
+    }
+  ]
 }
